@@ -2,6 +2,12 @@
 
 The alert manager tracks, manages and presents alert states. The integration is deliberately designed to be semantics-agnostic to enable a maximum of possible usage scenarios.
 
+[![GitHub Release][releases-shield]][releases-link] [![GitHub Release Date][release-date-shield]][releases-link] [![Tests][tests-shield]][tests-link] [![Validate][validate-shield]][validate-link]
+
+[![HomeAssistant][home-assistant-shield]][home-assistant-link] [![License][license-shield]][license-link]
+
+![Project Maintenance][maintenance-shield] [![GitHub Activity][activity-shield]][activity-link] [![Open bugs][bugs-shield]][bugs-link] [![Open enhancements][enhancements-shield]][enhancement-link]
+
 ## Installation
 
 ### Manual Installation
@@ -167,3 +173,22 @@ python -m venv .venv
 ### Local test instance
 
 `docker compose up -d` starts Home Assistant on <http://localhost:8123> with the integration mounted from `custom_components/alert_manager`. Configuration and state live in `dev/config` (only `configuration.yaml` is versioned). After changing the code, run `docker compose restart` to pick it up; logs are available via `docker compose logs -f`.
+
+[releases-shield]: https://img.shields.io/github/release/tfischer4765/alert_manager.svg?style=flat-square
+[releases-link]: https://github.com/tfischer4765/alert_manager/releases/latest
+[release-date-shield]: https://img.shields.io/github/release-date/tfischer4765/alert_manager?style=flat-square
+[tests-shield]: https://img.shields.io/github/actions/workflow/status/tfischer4765/alert_manager/tests.yml?branch=master&style=flat-square&label=tests
+[tests-link]: https://github.com/tfischer4765/alert_manager/actions/workflows/tests.yml
+[validate-shield]: https://img.shields.io/github/actions/workflow/status/tfischer4765/alert_manager/validate.yml?branch=master&style=flat-square&label=validate
+[validate-link]: https://github.com/tfischer4765/alert_manager/actions/workflows/validate.yml
+[home-assistant-shield]: https://img.shields.io/badge/Home%20Assistant-UI%20configuration-green?style=flat-square
+[home-assistant-link]: https://www.home-assistant.io/
+[license-shield]: https://img.shields.io/github/license/tfischer4765/alert_manager.svg?style=flat-square
+[license-link]: LICENSE
+[activity-shield]: https://img.shields.io/github/commit-activity/y/tfischer4765/alert_manager.svg?style=flat-square
+[activity-link]: https://github.com/tfischer4765/alert_manager/commits/master
+[bugs-shield]: https://img.shields.io/github/issues/tfischer4765/alert_manager/bug?color=red&style=flat-square&label=bugs
+[bugs-link]: https://github.com/tfischer4765/alert_manager/labels/bug
+[enhancements-shield]: https://img.shields.io/github/issues/tfischer4765/alert_manager/enhancement?color=blue&style=flat-square&label=enhancements
+[enhancement-link]: https://github.com/tfischer4765/alert_manager/labels/enhancement
+[maintenance-shield]: https://img.shields.io/maintenance/yes/2026.svg?style=flat-square
