@@ -1,0 +1,78 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "description": "Richte den Alert Manager ein. Alarmzustände kannst du anschließend hinzufügen."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Der Alert Manager ist bereits eingerichtet."
+    }
+  },
+  "config_subentries": {
+    "alert_state": {
+      "entry_type": "Alarmzustand",
+      "initiate_flow": {
+        "user": "Alarmzustand hinzufügen"
+      },
+      "step": {
+        "user": {
+          "title": "Alarmzustand hinzufügen",
+          "data": {
+            "name": "Name",
+            "priority": "Priorität"
+          },
+          "data_description": {
+            "name": "Name des Alarmzustands, z. B. Roter Alarm.",
+            "priority": "Höhere Zahlen haben Vorrang vor niedrigeren."
+          }
+        },
+        "reconfigure": {
+          "title": "Alarmzustand bearbeiten",
+          "data": {
+            "name": "Name",
+            "priority": "Priorität"
+          },
+          "data_description": {
+            "name": "Name des Alarmzustands, z. B. Roter Alarm.",
+            "priority": "Höhere Zahlen haben Vorrang vor niedrigeren."
+          }
+        }
+      },
+      "error": {
+        "name_empty": "Der Name darf nicht leer sein.",
+        "name_exists": "Es gibt bereits einen Alarmzustand mit diesem Namen.",
+        "priority_exists": "Es gibt bereits einen Alarmzustand mit dieser Priorität."
+      },
+      "abort": {
+        "reconfigure_successful": "Der Alarmzustand wurde aktualisiert."
+      }
+    }
+  },
+  "services": {
+    "set_alert": {
+      "name": "Alarm setzen",
+      "description": "Löst einen Alarm im Namen eines Aufrufers aus. Der Alarm bleibt aktiv, bis jeder Aufrufer, der ihn gesetzt hat, ihn wieder zurückgenommen hat.",
+      "fields": {
+        "alert_id": {
+          "name": "Alarm-ID",
+          "description": "Identifiziert den Aufrufer, der den Alarm auslöst."
+        }
+      }
+    },
+    "clear_alert": {
+      "name": "Alarm zurücknehmen",
+      "description": "Nimmt den Alarm eines Aufrufers zurück. Der Alarm erlischt, sobald der letzte Aufrufer ihn zurückgenommen hat.",
+      "fields": {
+        "alert_id": {
+          "name": "Alarm-ID",
+          "description": "Identifiziert den Aufrufer, der den Alarm zurücknimmt."
+        }
+      }
+    },
+    "reset_alert": {
+      "name": "Alarm zurücksetzen",
+      "description": "Setzt den Alarm für alle Aufrufer auf einmal zurück."
+    }
+  }
+}

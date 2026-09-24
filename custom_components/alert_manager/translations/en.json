@@ -1,0 +1,78 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "description": "Set up the Alert Manager. You can add alert states afterwards."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Alert Manager is already configured."
+    }
+  },
+  "config_subentries": {
+    "alert_state": {
+      "entry_type": "Alert state",
+      "initiate_flow": {
+        "user": "Add alert state"
+      },
+      "step": {
+        "user": {
+          "title": "Add alert state",
+          "data": {
+            "name": "Name",
+            "priority": "Priority"
+          },
+          "data_description": {
+            "name": "Name of the alert state, e.g. Red Alert.",
+            "priority": "Higher numbers take precedence over lower ones."
+          }
+        },
+        "reconfigure": {
+          "title": "Edit alert state",
+          "data": {
+            "name": "Name",
+            "priority": "Priority"
+          },
+          "data_description": {
+            "name": "Name of the alert state, e.g. Red Alert.",
+            "priority": "Higher numbers take precedence over lower ones."
+          }
+        }
+      },
+      "error": {
+        "name_empty": "The name must not be empty.",
+        "name_exists": "An alert state with this name already exists.",
+        "priority_exists": "An alert state with this priority already exists."
+      },
+      "abort": {
+        "reconfigure_successful": "The alert state has been updated."
+      }
+    }
+  },
+  "services": {
+    "set_alert": {
+      "name": "Set alert",
+      "description": "Raises an alert on behalf of a caller. The alert stays on until every caller that set it has cleared it.",
+      "fields": {
+        "alert_id": {
+          "name": "Alert ID",
+          "description": "Identifies the caller raising the alert."
+        }
+      }
+    },
+    "clear_alert": {
+      "name": "Clear alert",
+      "description": "Withdraws a caller's alert. The alert turns off once the last caller has cleared it.",
+      "fields": {
+        "alert_id": {
+          "name": "Alert ID",
+          "description": "Identifies the caller clearing the alert."
+        }
+      }
+    },
+    "reset_alert": {
+      "name": "Reset alert",
+      "description": "Clears the alert for all callers at once."
+    }
+  }
+}

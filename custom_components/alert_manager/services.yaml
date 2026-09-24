@@ -1,0 +1,29 @@
+set_alert:
+  target:
+    entity:
+      integration: alert_manager
+      domain: binary_sensor
+  fields:
+    alert_id:
+      required: true
+      example: "moisture_scullery"
+      selector:
+        text:
+
+clear_alert:
+  target:
+    entity:
+      integration: alert_manager
+      domain: binary_sensor
+  fields:
+    alert_id:
+      required: true
+      example: "moisture_scullery"
+      selector:
+        text:
+
+reset_alert:
+  target:
+    entity:
+      integration: alert_manager
+      domain: binary_sensor
