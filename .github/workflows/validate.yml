@@ -1,0 +1,37 @@
+name: Validate
+
+# Most of what the HACS action validates is repository state (description,
+# topics, issues enabled) rather than code, which is why the nightly run
+# exists: the repo can go from valid to invalid without a single commit.
+# hassfest is Home Assistant's own check of manifest, strings and services;
+# it runs alongside because a new Home Assistant release can tighten it.
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  validate-hacs:
+    name: HACS validation
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v7"
+      - name: HACS validation
+        uses: "hacs/action@main"
+        with:
+          category: "integration"
+          # The brands check requires an entry in home-assistant/brands,
+          # which this integration does not have (yet).
+          ignore: "brands"
+
+  validate-hassfest:
+    name: hassfest
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v7"
+      - name: hassfest
+        uses: "home-assistant/actions/hassfest@master"

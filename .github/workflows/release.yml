@@ -1,0 +1,82 @@
+name: Release
+
+# Triggered by the git tag, not by GitHub's release table. That way the tag
+# always exists first and the checks run before anything becomes visible.
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Check and publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # Needed so the annotated tag object (and its message) is available
+          # to the release notes step below, and so the sanity check sees the
+          # earlier tags.
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+
+      # Failing anywhere before the release step means no release is created,
+      # which is the point.
+      - name: Check the tag against the version
+        env:
+          TAG: ${{ github.ref_name }}
+        run: python scripts/sanity_check.py "$TAG"
+
+      - name: Lint and test
+        run: |
+          pip install pytest-homeassistant-custom-component ruff
+          ruff check .
+          ruff format --check .
+          pytest
+
+      # HACS installs an integration straight from the tagged source, so
+      # there is no asset to upload and no need for a draft stage: once the
+      # checks above have passed, the release can be published directly.
+      #
+      # --verify-tag keeps the direction right: without it gh would create a
+      # missing tag from --target, letting GitHub write into the ref database.
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          # HACS reads nothing but the pre-release flag, so it decides who
+          # gets a release. First match wins, and the order is the point:
+          #
+          #   v0.*    not finished, by convention -- candidates included. A
+          #           v0.9.0-rc.1 becomes v0.9.0, not 1.0, so it is no more
+          #           ready for general use than the version it stands for.
+          #   *-rc*   a release candidate: believed ready, goes to everyone.
+          #   *-*     alpha, beta, and anything unrecognised. Withholding is the
+          #           safe direction: a typo like -beat.1 stays with testers
+          #           instead of reaching every installation.
+          #
+          # No hyphen at all falls through to a normal release. Build metadata
+          # (v1.0.0+build.5) uses + and is correctly not treated as a
+          # pre-release.
+          FLAGS=""
+          case "$TAG" in
+            v0.*)  FLAGS="--prerelease" ;;
+            *-rc*) FLAGS="" ;;
+            *-*)   FLAGS="--prerelease" ;;
+          esac
+
+          # Hand-written notes live in the annotated tag, i.e. in the object
+          # database; --generate-notes appends the commit listing below them.
+          gh release create "$TAG" \
+            --verify-tag \
+            $FLAGS \
+            --title "$TAG" \
+            --notes "$(git tag -l --format='%(contents)' "$TAG")" \
+            --generate-notes

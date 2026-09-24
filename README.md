@@ -79,6 +79,81 @@ actions:
 
 ### Reacting to an alert
 
+## Releasing
+
+HACS installs the integration straight from the tagged source, so a release carries
+no asset of its own: the tag *is* the release.
+
+### Versioning
+
+`major.minor.patch`. Incrementing a position resets every lower one to zero.
+
+| Position | Rule |
+| -------- | ---- |
+| `major`  | Never automatic. Decided by the maintainer. `1.0.0` additionally means the integration is considered good enough. |
+| `minor`  | **Must** change on a breaking change. **May** change for a new feature. |
+| `patch`  | **Must** change whenever behaviour changes — a bugfix, a changed default. |
+
+The rules are floors, not ceilings; a larger bump is always the maintainer's call.
+
+### Who gets a release
+
+A GitHub pre-release is invisible to HACS unless a user has switched on beta
+versions for this repository, so the tag decides the audience:
+
+| Tag | Audience |
+| --- | -------- |
+| `v0.*` — including `v0.9.0-rc.1` | testers only |
+| `-alpha*`, `-beta*` | testers only |
+| `-rc*` from `1.0.0` on | everyone |
+| no suffix from `1.0.0` on | everyone |
+
+`v0.*` outranks `-rc*`: a `v0.9.0-rc.1` becomes `v0.9.0`, not `1.0`, so it is no
+readier for general use than the version it stands for. Any suffix that is not
+recognised is treated as a pre-release, so a typo like `-beat.1` stays with testers.
+
+HACS only ever offers releases, never the state of the default branch
+(`hide_default_branch` in `hacs.json`).
+
+### Cutting a release
+
+A tag push, but bump `version` in `custom_components/alert_manager/manifest.json`
+first — the sanity check refuses a tag that disagrees with it, and no release is
+created:
+
+```bash
+git tag -a v0.1.0 -m "What changed in this version"
+git push origin v0.1.0
+```
+
+The release workflow takes it from there: it runs the sanity check, the linter and
+the tests, and only if all of them pass does it publish the release. A failing check
+therefore leaves no release behind at all.
+
+Two conventions are enforced by that workflow:
+
+- **The tag decides who gets the release** — see [Who gets a release](#who-gets-a-release).
+- **The tag's annotation becomes the release notes**, with the generated commit
+  listing appended below it. Write the changelog in `git tag -a`, not in the web UI.
+
+The sanity check can be run locally as well:
+
+```bash
+python scripts/sanity_check.py          # working tree only
+python scripts/sanity_check.py v0.2.0   # also require the tag to agree
+```
+
+With a tag it additionally requires the tag to match the manifest version and to be
+greater than every existing tag (by SemVer precedence, so `v1.0.0` follows
+`v1.0.0-rc1`). Either way it checks that the manifest's domain matches the
+integration's directory and that `translations/en.json` is an exact copy of
+`strings.json`.
+
+The `Tests` workflow runs the sanity check, linter and tests on every push and pull
+request; `Validate` runs the HACS action and Home Assistant's hassfest, on pushes and
+nightly, since the HACS checks cover repository settings that can change without a
+commit.
+
 ## Development
 
 ```sh
@@ -86,6 +161,7 @@ python -m venv .venv
 .venv/bin/pip install pytest-homeassistant-custom-component ruff
 .venv/bin/pytest
 .venv/bin/ruff check . && .venv/bin/ruff format --check .
+.venv/bin/python scripts/sanity_check.py
 ```
 
 ### Local test instance
