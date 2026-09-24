@@ -87,3 +87,7 @@ python -m venv .venv
 .venv/bin/pytest
 .venv/bin/ruff check . && .venv/bin/ruff format --check .
 ```
+
+### Local test instance
+
+`docker compose up -d` starts Home Assistant on <http://localhost:8123> with the integration mounted from `custom_components/alert_manager`. Configuration and state live in `dev/config` (only `configuration.yaml` is versioned). After changing the code, run `docker compose restart` to pick it up; logs are available via `docker compose logs -f`.

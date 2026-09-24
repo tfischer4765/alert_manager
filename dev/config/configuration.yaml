@@ -1,0 +1,14 @@
+# Local development instance for the Alert Manager integration.
+default_config:
+
+logger:
+  default: info
+  logs:
+    custom_components.alert_manager: debug
+
+# Toggles to drive set_alert/clear_alert from test automations.
+input_boolean:
+  test_leak:
+    name: Test leak
+  test_door:
+    name: Test door
